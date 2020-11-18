@@ -1,0 +1,41 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{ super() }}
+<!--Include feather icon-->
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+{% endblock %}
+
+{% block title %}Final Project{% endblock %}
+
+{% block navbar %} 
+<div class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class = "navbar-brand" href="#">List It!</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class = "active"><a href="/">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li class = "dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Work
+                    <span class="caret"></span>
+                </a>
+                <ul class = "dropdown-menu">
+                    <li><a href="#">Item 1</a></li>
+                    <li><a href="#">Item 2</a></li>
+                    <li><a href="#">Item 3</a></li>
+                    <li><a href="#">Item 4</a></li>
+                </ul>
+            </li>>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
