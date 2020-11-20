@@ -1,6 +1,8 @@
 {% extends "base.html" %} 
 
+{% block page_content  %}
 <div class="container-fluid bg-1 text-center">
     <h3 class="margin">Project</h3>
-    <h3>This is the project.</h3>
+    <h3>This is the project, {% if current_user.is_authenticated %} {{ current_user.username }} {% else %} Stranger{% endif %}.</h3>
 </div>
+{% endblock %}
