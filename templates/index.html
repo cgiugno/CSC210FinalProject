@@ -5,13 +5,43 @@
 My To-Do List
 {% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <script>
+        function checkCustom(selector) {
+            if (selector.value == "custom") {
+                document.getElementById("custom_block").style.display = "block";
+            }
+            else {
+                document.getElementById("custom_block").style.display = "none";
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block filter %}
+{% if current_user.is_authenticated %}
+    <li class = "dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Filters
+            <span class="caret"></span>
+        </a>
+        <ul class = "dropdown-menu">
+            {% for topic in topics %}
+            <li class="filter_item" style="text-transform: capitalize;"><a href="/filter/{{ topic }}">{{ topic }}</a></li>
+            {% endfor %}
+            <li class="divider"></li>
+            <li class="filter_item"><a href="/">All</a></li> <!--Will be <a href="/final/" in Digital Scholar-->
+        </ul>
+    </li>
+{% endif %}
+{% endblock %}
 
 {% block page_content %}
 <div class="content">
     <div class="container-fluid bg-1 text-center">
-        <h3 class="margin">Project</h3>
-        <!--Shows current user-->
-        <h3>This is the project, {% if current_user.is_authenticated %} {{ current_user.username }}{% else %} Stranger{% endif %}.</h3> 
+        <!--<h3 class="margin">Project</h3>
+        Shows current user
+        <h3>This is the project, {% if current_user.is_authenticated %} {{ current_user.username }}{% else %} Stranger{% endif %}.</h3>--> 
     </div>
     
     <!--Check if user is logged in-->
@@ -23,11 +53,14 @@ My To-Do List
     {% else %}
 
     <!--If tasks are tagged with current user, show them-->
+    <div class = table-wrapper>
+    <div class="fontmain">
     <table class="newtable">
         <thread>
             <tr>
                 <th>Task</th>
                 <th>Added</th>
+                <th>Topic</th>
                 <th>Actions</th>
             </tr>
         </thread>   
@@ -35,26 +68,78 @@ My To-Do List
             {% for task in tasks %}
                 {% if task.user.username == current_user.username %}
                 <tr>
-                    <td>{{ task.content }}</td>
-                    <td>{{ task.date_created.date() }}</td>
+                    <td class = "task">{{ task.content }}</td>
+                    <td class = "date">{{ task.date_created.date() }}</td>
+                    <td class = "topic" style="text-transform:capitalize;"><a href="/filter/{{task.topic}}">{{ task.topic }}</a></td>
                     <td>
-                         <a href="/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
-                       
+                        {% if selected_topic == null %}
+                        <a href="/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
+                        {% else %}
+                        <a href="/{{selected_topic}}/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
+                        {% endif %}
+                        
+                        {% if selected_topic == null %}
                         <a href="/update/{{task.id}}">Update</a> <!--for DigScholar this will be <a href="final/update/{{task.id}}">-->
+                        {% else %}
+                        <a href="/{{selected_topic}}/update/{{task.id}}">Update</a> <!--for DigScholar this will be <a href="/{{selected_topic}}/final/update/{{task.id}}">-->
+                        {% endif %}
                     </td>
                 </tr>
                 {% endif %}
             {% endfor %}
         </tbody>
     </table>
+</div>
 
     {% endif %}
     
+    
+    {% if selected_topic == null %}
     <!--Form to submit new tasks-->
     <form action='/' method="POST"> <!--for DigScholar this will be <form action="/final/" METHOD="POST">)-->
         <input type="text" name="content" id="content">
+        <select id="filter" name="filter" onchange="checkCustom(this)" style="text-transform: capitalize;">
+            {% set ct = 0 %}
+            {% for topic in topics %}
+            {% if ct == 0 %}
+            <option value = "{{ topic }}" style="text-transform:capitalize;" selected>{{ topic }}</li>
+            {% set ct = 1 %}
+            {% else %}
+            <option value = "{{ topic }}" style="text-transform:capitalize;">{{ topic }}</li>
+            {% endif %}
+            {% endfor %}
+            {% if not ( "personal" in topics ) %}
+            <option value = "personal" style="text-transform:capitalize;">Personal</li>
+            {% endif %}
+            {% if not ( "interpersonal" in topics ) %}
+            <option value = "interpersonal" style="text-transform:capitalize;">Interpersonal</li>
+            {% endif %}
+            {% if not ( "errand" in topics ) %}
+            <option value = "errand" style="text-transform:capitalize;">Errand</li>
+            {% endif %}
+            {% if not ( "financial" in topics ) %}
+            <option value = "financial" style="text-transform:capitalize;">Financial</li>
+            {% endif %}
+            {% if not ( "school" in topics ) %}
+            <option value = "school" style="text-transform:capitalize;">School</li>
+            {% endif %}
+            {% if not ( "work" in topics ) %}
+            <option value = "work" style="text-transform:capitalize;">Work</li>
+            {% endif %}
+            <option value="custom">Custom</option>
+        </select>
+        <input type="submit" value="Add Task">
+        <div id="custom_block" style="display: none;">
+            <input type="text" name="custom_filter" id="custom_filter" style="margin-left: 27%; width: 17%;">
+        </div>
+    </form>
+    {% else %}
+    <form action='/filter/{{selected_topic}}' method="POST"> <!--for DigScholar this will be <form action="/final/filter/{{selected_topic}}" METHOD="POST">)-->
+        <input type="text" name="content" id="content">
         <input type="submit" value="Add Task">
     </form>
+    {% endif %}
+</div>
     {% endif %}
 </div>
 

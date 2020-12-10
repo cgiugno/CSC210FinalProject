@@ -2,18 +2,110 @@
 
 <!--Title of page-->
 {% block title %}
-<h1>Update To-Do List</h1>
+Update To-Do List
 {% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <script>
+        function checkCustom(selector) {
+            if (selector.value == "custom") {
+                document.getElementById("custom_block").style.display = "block";
+            }
+            else {
+                document.getElementById("custom_block").style.display = "none";
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block logo %}
+<a href="#"><img src="../../static/images/list_it_logo.png" alt="List it!"></a>
+{% endblock %}
+
+
 
 <!--Update To-Do item form-->
 {% block page_content %}
 <div class="content">
 
-    <h1>Update List</h1>
+    <h1 class = "move-over">Update List</h1>
 
-    <form action='/update/{{task.id}}' method="POST">
+    {% if selected_topic == null %}
+    <form class = "move-over" action='/update/{{task.id}}' method="POST">
         <input type="text" name="content" id="content" value="{{task.content}}">
+        <select id="filter" name="filter" style="text-transform: capitalize;"  onchange="checkCustom(this)">
+            <p>{{ topics }}</p>
+            {% for topic in topics %}
+            {% if task.topic == topic %}
+            <option value="{{ topic }}" style="text-transform: capitalize;" selected>{{ topic }}</option>
+            {% else %}
+            <option value="{{ topic }}" style="text-transform: capitalize;">{{ topic }}</option>
+            {% endif %}
+            {% endfor %}
+
+            {% if not ( "personal" in topics ) %}
+            <option value = "personal" style="text-transform:capitalize;">Personal</li>
+            {% endif %}
+            {% if not ( "interpersonal" in topics ) %}
+            <option value = "interpersonal" style="text-transform:capitalize;">Interpersonal</li>
+            {% endif %}
+            {% if not ( "errand" in topics ) %}
+            <option value = "errand" style="text-transform:capitalize;">Errand</li>
+            {% endif %}
+            {% if not ( "financial" in topics ) %}
+            <option value = "financial" style="text-transform:capitalize;">Financial</li>
+            {% endif %}
+            {% if not ( "school" in topics ) %}
+            <option value = "school" style="text-transform:capitalize;">School</li>
+            {% endif %}
+            {% if not ( "work" in topics ) %}
+            <option value = "work" style="text-transform:capitalize;">Work</li>
+            {% endif %}
+            <option value="custom">Custom</option>
+        </select>
         <input type="submit" value="Add Task">
+        <div id="custom_block" style="display: none;">
+            <input type="text" name="custom_filter" id="custom_filter" style="margin-left: 23.5%; width: 15%;">
+        </div>
     </form>
+    {% else %} 
+    
+    <form class = "move-over" action='/{{selected_topic}}/update/{{task.id}}' method="POST">
+        <input type="text" name="content" id="content" value="{{task.content}}">
+        <select id="filter" name="filter" style="text-transform: capitalize;"  onchange="checkCustom(this)">
+            {% for topic in topics %}
+            {% if task.topic == topic %}
+            <option value="{{ topic }}" style="text-transform: capitalize;" selected>{{ topic }}</option>
+            {% else %}
+            <option value="{{ topic }}" style="text-transform: capitalize;">{{ topic }}</option>
+            {% endif %}
+            {% endfor %}
+            {% if not ( "personal" in topics ) %}
+            <option value = "personal" style="text-transform:capitalize;">Personal</li>
+            {% endif %}
+            {% if not ( "interpersonal" in topics ) %}
+            <option value = "interpersonal" style="text-transform:capitalize;">Interpersonal</li>
+            {% endif %}
+            {% if not ( "errand" in topics ) %}
+            <option value = "errand" style="text-transform:capitalize;">Errand</li>
+            {% endif %}
+            {% if not ( "financial" in topics ) %}
+            <option value = "financial" style="text-transform:capitalize;">Financial</li>
+            {% endif %}
+            {% if not ( "school" in topics ) %}
+            <option value = "school" style="text-transform:capitalize;">School</li>
+            {% endif %}
+            {% if not ( "work" in topics ) %}
+            <option value = "work" style="text-transform:capitalize;">Work</li>
+            {% endif %}
+            <option value="custom">Custom</option>
+        </select>
+        <input type="submit" value="Add Task">
+        <div id="custom_block" style="display: none;">
+            <input type="text" name="custom_filter" id="custom_filter" style="margin-left: 23.5%; width: 15%;">
+        </div>
+    </form>
+    {% endif %}
 </div>
 {% endblock %}

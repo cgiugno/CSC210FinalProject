@@ -4,6 +4,7 @@
 {% block page_content %}
 {% block content %}
 
+<div class="fontmain">
 <h2> Here's your information! </h2>
     <table border="1">
         {% for key,value in result.items() %}
@@ -17,6 +18,6 @@
         </tr>
         {% endfor %}
     </table>
-
+</div>
 {% endblock %}
 {% endblock %}
