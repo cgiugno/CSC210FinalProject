@@ -1,9 +1,9 @@
 {% extends "base.html" %} 
 
 {% block page_content %}
-<h2 class = "move-over">Register</h2>
+<h2>Register</h2>
 <!--Registration form with email, username, and password fields-->
-<form class = "move-over" action="" method="POST">
+<form action="" method="POST">
     {{ form.hidden_tag() }}
     <div>
         {{form.email.label}} <br>

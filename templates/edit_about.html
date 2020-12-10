@@ -6,9 +6,9 @@ Edit My Profile
 {% endblock %}
 
 {% block page_content %}
-<h3 class = "move-over">Edit My Profile</h3>
+<h3>Edit My Profile</h3>
 <!--Edit form with email, username, and password fields-->
-<form class = "move-over" action="" method="POST">
+<form action="" method="POST">
     {{ form.hidden_tag() }}
     <div>
         {{form.edit_username.label}} <br>

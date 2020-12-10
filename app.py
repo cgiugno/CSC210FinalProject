@@ -77,8 +77,7 @@ class Tasks(db.Model):
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    topic = db.Column(db.String(200), nullable=True)
-
+    
     #Create a function to return a string to return a string when we add something to db
     def __repr__(self):
         return '<Task %r>' % self.id
@@ -92,11 +91,9 @@ def create_tables():
 def index():
     if request.method == 'POST':
         task_content = request.form['content']
-        task_topic = request.form['filter']
-        if task_topic == "custom":
-            new_task = Tasks(content=task_content, user=current_user._get_current_object(), topic=request.form['custom_filter'])
-        else:
-            new_task = Tasks(content=task_content, user=current_user._get_current_object(), topic=task_topic)
+        
+        new_task = Tasks(content=task_content, user=current_user._get_current_object())
+
         try:
             db.session.add(new_task)
             db.session.commit()
@@ -105,10 +102,7 @@ def index():
             return 'There was an issue adding your task :('
     
     else:
-        if current_user.is_authenticated:
-            tasks = Tasks.query.filter_by(user=current_user).order_by(Tasks.date_created).all()
-        else:
-            tasks = Tasks.query.order_by(Tasks.date_created).all()
+        tasks = Tasks.query.order_by(Tasks.date_created).all()
         return render_template('index.html', tasks=tasks)
     
     if request.method == 'GET':
@@ -116,35 +110,6 @@ def index():
 
     return render_template('index.html')
 
-@app.route("/filter/<string:selected_topic>", methods=['POST', 'GET'])
-def filter(selected_topic):
-    filter_topic = selected_topic
-    if request.method == 'POST':
-        task_content = request.form['content']
-        task_topic = selected_topic
-        
-        new_task = Tasks(content=task_content, user=current_user._get_current_object(), topic=task_topic)
-
-        try:
-            db.session.add(new_task)
-            db.session.commit()
-            urlStr = '/filter/%s' %selected_topic
-            return redirect(urlStr) #for DigScholar this will be 'return redirect('/final/filter/%s')
-        except:
-            return 'There was an issue adding your task :('
-    
-    else:
-        if filter_topic != "all":
-            tasks = Tasks.query.filter_by(topic=selected_topic).order_by(Tasks.date_created).all() 
-        else:
-            tasks = Tasks.query.order_by(Tasks.date_created).all()
-        return render_template('index.html', tasks=tasks, selected_topic=selected_topic)
-    
-    if request.method == 'GET':
-        pass
-
-    return render_template('index.html')
-    
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -158,39 +123,6 @@ def delete(id):
     except:
         return 'There was an error deleting that task'
 
-@app.route('/<string:selected_topic>/delete/<int:id>')
-def filter_delete(selected_topic, id):
-    filter_topic = selected_topic
-    task_to_delete = Tasks.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/filter/' +filter_topic) #for DigScholar this will be 'return redirect('/final')
-
-    except:
-        return 'There was an error deleting that task'
-
-@app.route('/<string:selected_topic>/update/<int:id>', methods=['GET','POST'])
-def filter_update(selected_topic, id):
-    task = Tasks.query.get_or_404(id)
-    filter_topic = selected_topic
-
-    if request.method == 'POST':
-        task.content = request.form['content']
-        task_topic = request.form['filter']
-        if task_topic == "custom":
-            task.topic = request.form['custom_filter']
-        else:
-            task.topic = task_topic
-        try:
-            db.session.commit()
-            return redirect('/filter/' +request.form['filter']) #for DigScholar this will be 'return redirect('/final')
-        except:
-            return 'There was an issue updating your task :('
-
-    else:
-        return render_template('update.html', task=task, selected_topic=selected_topic)
 
 @app.route('/update/<int:id>', methods=['GET','POST'])
 def update(id):
@@ -198,11 +130,8 @@ def update(id):
 
     if request.method == 'POST':
         task.content = request.form['content']
-        task.topic = request.form['filter']
-        if task_topic == "custom":
-            task.topic = request.form['custom_filter']
-        else:
-            task.topic = task_topic
+
+
         try:
             db.session.commit()
             return redirect('/') #for DigScholar this will be 'return redirect('/final')
@@ -211,6 +140,8 @@ def update(id):
 
     else:
         return render_template('update.html', task=task)
+
+
 
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
