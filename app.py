@@ -13,6 +13,7 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 
 from forms import LoginForm, RegisterForm, EditProfileForm
 
+
 app = Flask(__name__)
 application = app
 
@@ -101,7 +102,7 @@ def index():
         try:
             db.session.add(new_task)
             db.session.commit()
-            return redirect('/') #for DigScholar this will be 'return redirect('/final')
+            return redirect('/final/') #for DigScholar this will be 'return redirect('/final')
         except:
             return 'There was an issue adding your task :('
     
@@ -130,23 +131,23 @@ def index():
 
 @app.route("/filter/<string:selected_topic>", methods=['POST', 'GET'])
 def filter(selected_topic):
-    filter_topic = selected_topic
+    filter_topic = selected_topic.replace("%20", " ")
     if request.method == 'POST':
         task_content = request.form['content']
-        task_topic = selected_topic
+        task_topic = filter_topic
         new_task = Tasks(content=task_content, user=current_user._get_current_object(), topic=task_topic)
 
         try:
             db.session.add(new_task)
             db.session.commit()
-            urlStr = '/filter/%s' %selected_topic
-            return redirect(urlStr) #for DigScholar this will be 'return redirect('/final')
+            urlStr = '/final/filter/%s' %task_topic
+            return redirect(url_for("filter", selected_topic = task_topic)) #for DigScholar this will be 'return redirect('/final')
         except:
             return 'There was an issue adding your task :('
     
     else:
         if filter_topic != "all":
-            tasks = Tasks.query.filter_by(user=current_user).filter_by(topic=selected_topic).order_by(Tasks.date_created).all()
+            tasks = Tasks.query.filter_by(user=current_user).filter_by(topic=filter_topic).order_by(Tasks.date_created).all()
             full_tasks = Tasks.query.filter_by(user=current_user).order_by(Tasks.date_created).all()
             topics = []
             for f_task in full_tasks:
@@ -159,7 +160,7 @@ def filter(selected_topic):
             for f_task in full_tasks:
                 topics.append(f_task.topic)
             topics = set(topics)
-        return render_template('index.html', tasks=tasks, selected_topic=selected_topic, topics=topics)
+        return render_template('index.html', tasks=tasks, selected_topic=filter_topic, topics=topics)
     
     if request.method == 'GET':
         pass
@@ -174,14 +175,14 @@ def delete(id):
     try:
         db.session.delete(task_to_delete)
         db.session.commit()
-        return redirect('/') #for DigScholar this will be 'return redirect('/final')
+        return redirect('/final/') #for DigScholar this will be 'return redirect('/final')
 
     except:
         return 'There was an error deleting that task'
 
 @app.route('/<string:selected_topic>/delete/<int:id>')
 def filter_delete(selected_topic, id):
-    filter_topic = selected_topic
+    filter_topic = selected_topic.replace("%20", " ")
     task_to_delete = Tasks.query.get_or_404(id)
 
     try:
@@ -189,8 +190,8 @@ def filter_delete(selected_topic, id):
         db.session.commit()
         tasks = Tasks.query.filter_by(user=current_user).filter_by(topic=filter_topic).all()
         if (len(tasks) <= 0):
-            return redirect('/')
-        return redirect('/filter/' +filter_topic) #for DigScholar this will be 'return redirect('/final')
+            return redirect('/final/')
+        return redirect(url_for("filter", selected_topic=filter_topic)) #for DigScholar this will be 'return redirect('/final')
 
     except:
         return 'There was an error deleting that task'
@@ -208,12 +209,12 @@ def update(id):
             task.topic = task_topic
         try:
             db.session.commit()
-            return redirect('/') #for DigScholar this will be 'return redirect('/final')
+            return redirect(url_for('index')) #for DigScholar this will be 'return redirect('/final')
         except:
             return 'There was an issue updating your task :('
 
     else:
-        tasks = Tasks.query.order_by(Tasks.date_created).all()
+        tasks = Tasks.query.filter_by(user=current_user).order_by(Tasks.date_created).all()
         topics = []
         for task1 in tasks:
             topics.append(task1.topic)
@@ -223,8 +224,8 @@ def update(id):
 @app.route('/<string:selected_topic>/update/<int:id>', methods=['GET','POST'])
 def filter_update(selected_topic, id):
     task = Tasks.query.get_or_404(id)
-    filter_topic = selected_topic
-
+    filter_topic = selected_topic.replace("%20", " ")
+    
     if request.method == 'POST':
         task.content = request.form['content']
         task_topic = request.form['filter']
@@ -236,17 +237,17 @@ def filter_update(selected_topic, id):
         
         try:
             db.session.commit()
-            return redirect('/filter/' +task_topic) #for DigScholar this will be 'return redirect('/final')
+            return redirect(url_for("filter", selected_topic=task_topic)) #for DigScholar this will be 'return redirect('/final')
         except:
             return 'There was an issue updating your task :('
 
     else:
-        tasks = Tasks.query.order_by(Tasks.date_created).all()
+        tasks = Tasks.query.filter_by(user=current_user).order_by(Tasks.date_created).all()
         topics = []
         for task1 in tasks:
             topics.append(task1.topic)
         topics = set(topics)
-        return render_template('update.html', task=task, selected_topic=selected_topic, topics=topics)
+        return render_template('update.html', task=task, selected_topic=filter_topic, topics=topics)
 
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
@@ -262,7 +263,6 @@ def register():
         user = User(email=form.email.data, username=form.username.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash("You can now login.")
         return redirect(url_for("login"))
     return render_template("register.html", form=form)
 

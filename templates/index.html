@@ -5,6 +5,14 @@
 My To-Do List
 {% endblock %}
 
+{% block logo %}
+{% if selected_topic == null %}
+    {{ super() }}
+{% else %}
+<a href="#"><img src="../../final/static/images/list_it_logo.png" alt="List it!"></a>
+{% endif %}
+{% endblock %}
+
 {% block head %}
     {{ super() }}
     <script>
@@ -27,10 +35,10 @@ My To-Do List
         </a>
         <ul class = "dropdown-menu">
             {% for topic in topics %}
-            <li class="filter_item" style="text-transform: capitalize;"><a href="/filter/{{ topic }}">{{ topic }}</a></li>
+            <li class="filter_item" style="text-transform: capitalize;"><a href="/final/filter/{{ topic }}">{{ topic }}</a></li>
             {% endfor %}
             <li class="divider"></li>
-            <li class="filter_item"><a href="/">All</a></li> <!--Will be <a href="/final/" in Digital Scholar-->
+            <li class="filter_item"><a href="/final/">All</a></li> <!--Will be <a href="/final/" in Digital Scholar-->
         </ul>
     </li>
 {% endif %}
@@ -48,12 +56,12 @@ My To-Do List
     {% if current_user.is_authenticated %}
 
     <!--Check if any tasks-->
-    {% if tasks|length < 1 %}
-    <h4> There are no tasks. Create one below!</h4>
-    {% else %}
+  
 
     <!--If tasks are tagged with current user, show them-->
     <div class = table-wrapper>
+    
+    {% if tasks|length >= 1 %}    
     <div class="fontmain">
     <table class="newtable">
         <thread>
@@ -70,18 +78,18 @@ My To-Do List
                 <tr>
                     <td class = "task">{{ task.content }}</td>
                     <td class = "date">{{ task.date_created.date() }}</td>
-                    <td class = "topic" style="text-transform:capitalize;"><a href="/filter/{{task.topic}}">{{ task.topic }}</a></td>
+                    <td class = "topic" style="text-transform:capitalize;"><a href="/final/filter/{{task.topic}}">{{ task.topic }}</a></td>
                     <td>
                         {% if selected_topic == null %}
-                        <a href="/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
+                        <a href="/final/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
                         {% else %}
-                        <a href="/{{selected_topic}}/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
+                        <a href="/final/{{selected_topic}}/delete/{{task.id}}">Delete</a> <!--for DigScholar this will be <a href="final/delete/{{task.id}}">-->
                         {% endif %}
                         
                         {% if selected_topic == null %}
-                        <a href="/update/{{task.id}}">Update</a> <!--for DigScholar this will be <a href="final/update/{{task.id}}">-->
+                        <a href="/final/update/{{task.id}}">Update</a> <!--for DigScholar this will be <a href="final/update/{{task.id}}">-->
                         {% else %}
-                        <a href="/{{selected_topic}}/update/{{task.id}}">Update</a> <!--for DigScholar this will be <a href="/{{selected_topic}}/final/update/{{task.id}}">-->
+                        <a href="/final/{{selected_topic}}/update/{{task.id}}">Update</a> <!--for DigScholar this will be <a href="/{{selected_topic}}/final/update/{{task.id}}">-->
                         {% endif %}
                     </td>
                 </tr>
@@ -91,12 +99,16 @@ My To-Do List
     </table>
 </div>
 
-    {% endif %}
     
+    
+    
+    {% else %}
+    <h4> There are no tasks. Create one below!</h4>
+    {% endif %}
     
     {% if selected_topic == null %}
     <!--Form to submit new tasks-->
-    <form action='/' method="POST"> <!--for DigScholar this will be <form action="/final/" METHOD="POST">)-->
+    <form action='/final/' method="POST"> <!--for DigScholar this will be <form action="/final/" METHOD="POST">)-->
         <input type="text" name="content" id="content">
         <select id="filter" name="filter" onchange="checkCustom(this)" style="text-transform: capitalize;">
             {% set ct = 0 %}
@@ -134,7 +146,7 @@ My To-Do List
         </div>
     </form>
     {% else %}
-    <form action='/filter/{{selected_topic}}' method="POST"> <!--for DigScholar this will be <form action="/final/filter/{{selected_topic}}" METHOD="POST">)-->
+    <form action='/final/filter/{{selected_topic}}' method="POST"> <!--for DigScholar this will be <form action="/final/filter/{{selected_topic}}" METHOD="POST">)-->
         <input type="text" name="content" id="content">
         <input type="submit" value="Add Task">
     </form>

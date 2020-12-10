@@ -25,7 +25,7 @@
         <ul class="nav-updated">
             <div class="navbar-header"> 
         </div>
-            <li><a href="/">Home</a></li> <!--Will be <a href="/final/" in Digital Scholar-->
+            <li><a href="/final/">Home</a></li> <!--Will be <a href="/final/" in Digital Scholar-->
             {% if current_user.is_authenticated %}
             <li class><a href="{{ url_for('about') }}">User Settings</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
@@ -42,7 +42,7 @@
 <div class ="filter_div fontmain">
 <div>
     {% block logo %}
-    <a href="#"><img src="../static/images/list_it_logo.png" alt="List it!"></a>
+    <a href="#"><img src="../final/static/images/list_it_logo.png" alt="List it!"></a>
     {% endblock %}</div>
        <!-- <h3 class="margin">Project</h3>-->
         <!--Shows current user-->

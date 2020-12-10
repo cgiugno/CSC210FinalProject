@@ -206,7 +206,14 @@ table a:hover {
 .topic a {
 	font-size: 25px;
 }
+h4 {
+	margin-top: 575px;
+		padding-top: 50px;
 
+	margin-left: 25%;
+	color: white;
+	font-size: 20px;
+}
 
 /*
 h3{

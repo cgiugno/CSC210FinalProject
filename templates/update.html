@@ -20,7 +20,7 @@ Update To-Do List
 {% endblock %}
 
 {% block logo %}
-<a href="#"><img src="../../static/images/list_it_logo.png" alt="List it!"></a>
+<a href="#"><img src="../../../final/static/images/list_it_logo.png" alt="List it!"></a>
 {% endblock %}
 
 
@@ -32,7 +32,7 @@ Update To-Do List
     <h1 class = "move-over">Update List</h1>
 
     {% if selected_topic == null %}
-    <form class = "move-over" action='/update/{{task.id}}' method="POST">
+    <form class = "move-over" action='/final/update/{{task.id}}' method="POST">
         <input type="text" name="content" id="content" value="{{task.content}}">
         <select id="filter" name="filter" style="text-transform: capitalize;"  onchange="checkCustom(this)">
             <p>{{ topics }}</p>
@@ -71,7 +71,7 @@ Update To-Do List
     </form>
     {% else %} 
     
-    <form class = "move-over" action='/{{selected_topic}}/update/{{task.id}}' method="POST">
+    <form class = "move-over" action='/final/{{selected_topic}}/update/{{task.id}}' method="POST">
         <input type="text" name="content" id="content" value="{{task.content}}">
         <select id="filter" name="filter" style="text-transform: capitalize;"  onchange="checkCustom(this)">
             {% for topic in topics %}
