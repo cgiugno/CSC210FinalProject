@@ -1,47 +1,61 @@
 {% extends "bootstrap/base.html" %}
 
-{% block head %}
-{{ super() }}
-<!--Include feather icon-->
-<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
-<link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+<!--Sets styles, sizing, character set, favicon-->
+{% block head %} 
+    {{ super() }}
+    <!DOCTYPE html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css')}}">
+    <!--Include icon-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
 {% endblock %}
 
+<!--Title of webpage-->
 {% block title %}Final Project{% endblock %}
 
+<!--Navbar with Home, About, Login, Register, Logout and Dropdown Menu-->
 {% block navbar %} 
 <div class="navbar navbar-inverse">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <a class = "navbar-brand" href="#">List It!</a>
+        <ul class="nav-updated">
+            <div class="navbar-header">
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li class = "active"><a href="/">Home</a></li>
-            <li><a href="#">About</a></li>
+            <li><a href="/">Home</a></li> <!--Will be <a href="/final/" in Digital Scholar-->
             {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('about') }}">User Settings</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('register') }}">Sign Up</a></li>
             {% endif %}
-            <li class = "dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Work
-                    <span class="caret"></span>
-                </a>
-                <ul class = "dropdown-menu">
-                    <li><a href="#">Item 1</a></li>
-                    <li><a href="#">Item 2</a></li>
-                    <li><a href="#">Item 3</a></li>
-                    <li><a href="#">Item 4</a></li>
-                </ul>
-            </li>>
+
         </ul>
+    </div>
+</div>
+
+
+<div class ="filter_div">
+    <div>
+        {% block logo %}
+        <a href="#"><img src="../static/images/list_it_logo.png" alt="List it!"></a>
+        {% endblock %}
+    </div>
+    <!-- <h3 class="margin">Project</h3>-->
+    <!--Shows current user-->
+    <div class = "filter-area">
+        <h3>This is the project, {% if current_user.is_authenticated %} {{ current_user.username }}{% else %} Stranger{% endif %}.</h3> 
+        {% block filter_list %}
+        {% endblock %}
     </div>
 </div>
 {% endblock %}
 
-{% block content %}
+{%block content %}
 <div class="container">
-    {% block page_content %}{% endblock %}
+    {% block page_content %} {% endblock %}
 </div>
 {% endblock %}

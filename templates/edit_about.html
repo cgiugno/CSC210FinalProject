@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+<!--Title of Page-->
+{% block title %}
+Edit My Profile
+{% endblock %}
+
+{% block page_content %}
+<h3 class = "move-over">Edit My Profile</h3>
+<!--Edit form with email, username, and password fields-->
+<form class = "move-over" action="" method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{form.edit_username.label}} <br>
+        {{form.edit_username(size=30)}}
+    </div>
+    <div>
+        {{form.edit_email.label}} <br>
+        {{form.edit_email(size=30)}}
+    </div> <br>
+    <div>
+        {{form.original_password.label}} <br>
+        {{form.original_password(size=30)}}
+    </div>
+    <div>
+        {{form.repeat_original_password.label}} <br>
+        {{form.repeat_original_password(size=30)}}
+    </div> <br>
+    <div>
+        {{form.new_password.label}} <br>
+        {{form.new_password(size=30)}}
+        </div>
+    <div>
+        {{form.repeat_new_password.label}} <br>
+        {{form.repeat_new_password(size=30)}}
+        {% for field in form.errors %}
+            {% for error in form.errors[field] %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div> <br>
+    <div>
+        {{form.submit_button()}}
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+<!--Title of page-->
+{% block title %} 
+About Me
+{% endblock %}
+
+<!--User Information-->
+{% block page_content %}
+{% if current_user.is_authenticated %} 
+    <h3 class = "move-over">{{ current_user.username }} <a type="button" class="btn btn-link" href="{{ url_for('about_edit') }}">Edit</a></h3> 
+    <p class = "move-over">Email: {{ current_user.email }}</p>
+{% endif %}
+{% endblock %}

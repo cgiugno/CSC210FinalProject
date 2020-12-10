@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+{% block content %}
+
+<h2> Here's your information! </h2>
+    <table border="1">
+        {% for key,value in result.items() %}
+        <tr>
+            <th>
+                {{key}}
+            </th>
+            <td>
+                {{value}}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
+{% endblock %}

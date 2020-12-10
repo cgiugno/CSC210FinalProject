@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+<!--Title of page-->
+{% block title %}
+Update To-Do List
+{% endblock %}
+
+{% block logo %}
+<a href="#"><img src="../../static/images/list_it_logo.png" alt="List it!"></a>
+{% endblock %}
+
+<!--Update To-Do item form-->
+{% block page_content %}
+<div class="content">
+
+    <h1 class = "move-over">Update List</h1>
+
+    {% if selected_topic == null %}
+    <form class = "move-over" action='/update/{{task.id}}' method="POST">
+        <input type="text" name="content" id="content" value="{{task.content}}">
+        <select id="filter" name="filter">
+            {% if task.topic == "personal" %}
+            <option value="personal" selected>Personal Goals</option>
+            {% else %}
+            <option value="personal">Personal Goals</option>
+            {% endif %}
+
+            {% if task.topic == "school" %}
+            <option value="school" selected>School</option>
+            {% else %}
+            <option value="school">School</option>
+            {% endif %}
+
+            {% if task.topic == "work" %}
+            <option value="work" selected>Work</option>
+            {% else %}
+            <option value="work">Work</option>
+            {% endif %}
+
+            {% if task.topic == "interpersonal" %}
+            <option value="interpersonal" selected>Interpersonal</option>
+            {% else %}
+            <option value="interpersonal">Interpersonal</option>
+            {% endif %}
+
+            {% if task.topic == "financial" %}
+            <option value="financial" selected>Financial</option>
+            {% else %}
+            <option value="financial">Financial</option>
+            {% endif %}
+
+            {% if task.topic == "errand" %}
+            <option value="errand" selected>Errand</option>
+            {% else %}
+            <option value="errand">Errand</option>
+            {% endif %}
+        </select>
+        <input type="submit" value="Add Task">
+    </form>
+    {% else %} 
+    
+    <form class = "move-over" action='/{{selected_topic}}/update/{{task.id}}' method="POST">
+        <input type="text" name="content" id="content" value="{{task.content}}">
+        <select id="filter" name="filter">
+            {% if task.topic == "personal" %}
+            <option value="personal" selected>Personal Goals</option>
+            {% else %}
+            <option value="personal">Personal Goals</option>
+            {% endif %}
+
+            {% if task.topic == "school" %}
+            <option value="school" selected>School</option>
+            {% else %}
+            <option value="school">School</option>
+            {% endif %}
+
+            {% if task.topic == "work" %}
+            <option value="work" selected>Work</option>
+            {% else %}
+            <option value="work">Work</option>
+            {% endif %}
+
+            {% if task.topic == "interpersonal" %}
+            <option value="interpersonal" selected>Interpersonal</option>
+            {% else %}
+            <option value="interpersonal">Interpersonal</option>
+            {% endif %}
+
+            {% if task.topic == "financial" %}
+            <option value="financial" selected>Financial</option>
+            {% else %}
+            <option value="financial">Financial</option>
+            {% endif %}
+
+            {% if task.topic == "errand" %}
+            <option value="errand" selected>Errand</option>
+            {% else %}
+            <option value="errand">Errand</option>
+            {% endif %}
+        </select>
+        <input type="submit" value="Add Task">
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
